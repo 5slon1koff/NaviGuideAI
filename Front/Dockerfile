@@ -1,9 +1,9 @@
 FROM node:latest
-WORKDIR /
+WORKDIR /app
 EXPOSE 3000:3000
 ADD package*.json ./
-RUN npm install
+RUN npm install --force
 ADD . .
-RUN npm run build
-CMD npm run preview
+
+CMD npm run dev -- --host
 

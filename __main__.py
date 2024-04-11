@@ -26,7 +26,7 @@ def output_audio_to_wav(output_audio, output_file_path):
 
 
 app = Flask(__name__)
-app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # Например, установите максимальный размер в 16MB
+app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024
 CORS(app)
 
 
@@ -39,7 +39,6 @@ def handle_request(stt_output=None):
     latest_file = get_latest_file_in_dir('ML/speech_to_text/stt_output')
     print(file_path)
 
-
     if latest_file is not None:
         with open(latest_file, 'r', encoding='utf-8') as file:
             result = file.read()
@@ -47,14 +46,14 @@ def handle_request(stt_output=None):
         result = "No files found in 'stt_output' directory."
     print(result)
 
-    llama_data = llama_summary_model(result) # Format: [[tag, yandex_prompt, sub, subsub, llama_repeat_output, api_tag], user_input, language]
-    api_tag, language = llama_data[0][5], llama_data[2] # 1. Какие апи вызывать. 2. Язык запроса
-    yandex_data = yandex_gpt_model(llama_data) # Format (answer, summarized_user_input, api_tag)
-    chat_response, maps_input = yandex_data[0], yandex_data[1] # Ответ для чата. 2. Запрос для карт
+    llama_data = llama_summary_model(
+        result)  # Format: [[tag, yandex_prompt, sub, subsub, llama_repeat_output, api_tag], user_input, language]
+    api_tag, language = llama_data[0][5], llama_data[2]  # 1. Какие апи вызывать. 2. Язык запроса
+    yandex_data = yandex_gpt_model(llama_data)  # Format (answer, summarized_user_input, api_tag)
+    chat_response, maps_input = yandex_data[0], yandex_data[1]  # Ответ для чата. 2. Запрос для карт
 
     response = {'message': result, 'chat_response': chat_response, 'maps_input': maps_input}
     return json.dumps(response)
-
 
 
 if __name__ == '__main__':
